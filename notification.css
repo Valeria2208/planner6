@@ -1,0 +1,98 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal */
+.modal {
+  width: 420px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Content */
+.modal-content {
+  padding: 20px;
+}
+
+.warning {
+  color: #e67e22;
+  font-weight: bold;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.row span {
+  margin-right: 10px;
+}
+
+.warning-text {
+  color: #e74c3c;
+}
+
+.footer-text {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* Button */
+.ok-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  background: #f39c12;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ok-btn:hover {
+  background: #e67e22;
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Planner</title>
+<link rel="stylesheet" href="style планер.css">
+</head>
+<body>
+
+<header>
+<div class="logo">Smart student planner</div>
+
+<nav>
+<a href="planner.html">My Tasks</a>
+<a href="schedule.html">Lesson schedule</a>
+<a href="analytics.html">Analytics</a>
+</nav>
+
+<div class="right">
+  <a href="notification.html">
+    <button>🔔</button>
+  </a>
+
+<a href="private.html">
+  <img id="avatarSmall" src="https://via.placeholder.com/40">
+</a>
+
+</div>
+</header>
+
+<div class="container">
+
+
+<div class="main">
+
+<h1>Hi, <span id="username">Student</span></h1>
+
+<h2>Your deadlines:</h2>
+
+<div id="deadlineList"></div>
+
+<div class="achievements">
+<h3>My achievements</h3>
+
+<p>Tasks completed 
+<span id="doneTasks">0</span> / 
+<span id="totalTasks">4</span>
+</p>
+
+<div class="bar">
+<div class="fill" id="progressBar"></div>
+</div>
+</div>
+
+</div>
+
+<div class="side">
+
+<div class="card">
+<h2>Timer</h2>
+
+<input type="number" id="timerInput" placeholder="Enter minutes" min="1">
+
+<div id="timer">00:00</div>
+
+<button id="startBtn">Start</button>
+<button id="pauseBtn">Pause</button>
+<button id="resetBtn">Reset</button>
+
+</div>
+
+<div class="card">
+  <h3>Next Exam</h3>
+  <div id="examList"></div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ===== ПРИВЕТСТВИЕ =====
+  const name = localStorage.getItem("studentName");
+  const username = document.getElementById("username");
+
+  if (username) {
+    username.textContent = name ? `${name}!` : "Привет!";
+  }
+
+  // ===== АВАТАР =====
+  const avatar = document.getElementById("avatarSmall");
+  const photo = localStorage.getItem("studentPhoto");
+
+  if (avatar) {
+    avatar.src = (photo && photo !== "default-avatar")
+      ? photo
+      : "https://via.placeholder.com/40";
+  }
+
+  // ===== STORAGE =====
+  function getTasks() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
+  }
+
+  function saveTasks(tasks) {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  // ===== ФИКС СТАРЫХ ДАННЫХ =====
+  let tasks = getTasks();
+
+  tasks = tasks.map(task => ({
+    id: task.id || Date.now().toString() + Math.random(),
+    subject: task.subject || "No name",
+    deadline: task.deadline || new Date().toISOString(),
+    type: task.type || "task",
+    completed: task.completed || false
+  }));
+
+  saveTasks(tasks);
+
+  // ===== РЕНДЕР ЗАДАЧ =====
+  function renderTasks() {
+    const container = document.getElementById("deadlineList");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const tasks = getTasks().filter(t => t.type !== "exam");
+
+    tasks.forEach(task => {
+      const div = document.createElement("div");
+
+      div.style.background = "#d4edda";
+      div.style.padding = "10px";
+      div.style.margin = "8px 0";
+      div.style.borderRadius = "8px";
+      div.style.display = "flex";
+      div.style.justifyContent = "space-between";
+      div.style.alignItems = "center";
+
+      div.innerHTML = `
+        <span style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
+          ${task.subject}
+        </span>
+        <span>${new Date(task.deadline).toLocaleDateString()}</span>
+        <div>
+          <button data-id="${task.id}" class="doneBtn">✔️</button>
+          <button data-id="${task.id}" class="deleteBtn">❌</button>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // удаление
+    container.querySelectorAll(".deleteBtn").forEach(btn => {
+      btn.onclick = () => deleteTask(btn.dataset.id);
+    });
+
+    // выполнение
+    container.querySelectorAll(".doneBtn").forEach(btn => {
+      btn.onclick = () => toggleTask(btn.dataset.id);
+    });
+  }
+
+  // ===== ЭКЗАМЕНЫ =====
+function renderTasks() {
+  const container = document.getElementById("deadlineList");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const tasks = getTasks().filter(t => t.type !== "exam");
+
+  tasks.forEach(task => {
+    const div = document.createElement("div");
+
+    div.style.background = "#d4edda";
+    div.style.padding = "10px";
+    div.style.margin = "8px 0";
+    div.style.borderRadius = "8px";
+    div.style.display = "flex";
+    div.style.justifyContent = "space-between";
+    div.style.alignItems = "center";
+
+    div.innerHTML = `
+      <label style="display:flex; align-items:center; gap:10px;">
+        <input type="checkbox" ${task.completed ? "checked" : ""} data-id="${task.id}">
+        <span style="${task.completed ? 'text-decoration: line-through; opacity:0.6;' : ''}">
+          ${task.subject}
+        </span>
+      </label>
+
+      <span>${new Date(task.deadline).toLocaleDateString()}</span>
+
+      <button data-id="${task.id}" class="deleteBtn">❌</button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  // чекбокс
+  container.querySelectorAll("input[type='checkbox']").forEach(cb => {
+    cb.onchange = () => toggleTask(cb.dataset.id);
+  });
+
+  // удаление
+  container.querySelectorAll(".deleteBtn").forEach(btn => {
+    btn.onclick = () => deleteTask(btn.dataset.id);
+  });
+}
+
+  // ===== УДАЛЕНИЕ =====
+  function deleteTask(id) {
+    let tasks = getTasks();
+    tasks = tasks.filter(t => t.id !== id);
+    saveTasks(tasks);
+    renderTasks();
+    renderExams();
+  }
+
+  // ===== ГАЛОЧКА =====
+  function toggleTask(id) {
+    let tasks = getTasks();
+
+    tasks = tasks.map(t => {
+      if (t.id === id) {
+        return { ...t, completed: !t.completed };
+      }
+      return t;
+    });
+
+    saveTasks(tasks);
+    renderTasks();
+  }
+
+  // ===== ДОБАВЛЕНИЕ =====
+  window.addItem = function(subject, date, type = "task") {
+    let tasks = getTasks();
+
+    tasks.push({
+      id: Date.now().toString(),
+      subject: subject,
+      deadline: date,
+      type: type,
+      completed: false
+    });
+
+    saveTasks(tasks);
+    renderTasks();
+    renderExams();
+  }
+
+  // ===== СТАРТ =====
+  renderTasks();
+  renderExams();
+});
+</script>
+</body>
+</html>

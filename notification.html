@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Planner</title>
+  <link rel="stylesheet" href="notification.css">
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+
+    <div class="modal-header">
+      <span class="icon">📌</span>
+      <h2>Deadline Reminder</h2>
+      <button class="close" id="closeBtn">✖</button>
+    </div>
+
+    <div class="modal-content">
+
+      <p class="warning">⏰ Deadline is approaching!</p>
+
+      <p>
+        Don’t forget to finish the assignment 
+        <strong>“Term Paper”</strong>
+      </p>
+
+      <div class="row">
+        <span>📅</span>
+        <p>Due date: <strong>May 15 at 6:00 PM</strong></p>
+      </div>
+
+      <div class="row">
+        <span>⏳</span>
+        <p>Time left: <strong id="timeLeft">5 hours</strong></p>
+      </div>
+
+      <div class="row warning-text">
+        <span>⚠️</span>
+        <p>Better submit early to avoid rushing</p>
+      </div>
+
+      <p class="footer-text">
+        You can do it! Good luck! 💪
+      </p>
+
+      <button class="ok-btn" id="okBtn">Got it</button>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="notification.js"></script>
+</body>
+</html>
